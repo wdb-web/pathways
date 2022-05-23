@@ -100,10 +100,24 @@ easy.clusterProfiler(n@kegg_analyst$enrichKEGG$a@result)
 # circos
 
 ``` r
-easy.clusterProfiler(n@kegg_analyst$enrichKEGG$a@result)
+library(tidyverse)
+library(data.table)
+library(clusterProfiler)
+load("pathways.RData")
+comp_dotplot(da@kegg_analyst$enrichKEGG$a)
+da->lllll
+lllll->da
+ da@kegg_analyst$enrichKEGG$a@result%>% dplyr::filter(org=="KEGG") ->y
+library(randomcoloR)
+library(circlize)
+library(ComplexHeatmap)
+FC<-c(0.5,1.2,0.4,0.1,2)  # add FC 
+names(FC)<-y$geneID%>%unlist%>% str_split("/")%>%unlist %>%unique #FC names
+plot_circos(y,FC) # is a clusterProfiler@result data
+
 ```
 
-<img src="docs/reference/easy.clusterProfiler-1.png" width="100%" height="50%"/>
+<img src="vignettes/man/figures/circos.png" width="100%" height="50%"/>
 
 
 # enrichplot
