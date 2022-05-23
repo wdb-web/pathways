@@ -46,4 +46,4 @@ easy.clusterProfiler(n@kegg_analyst$enrichKEGG$a@result)
 enrichplot::emapplot(enrichplot::pairwise_termsim(n@kegg_analyst$compareClusterResult))
 ```
 
-<img src="help/figures/README-unnamed-chunk-3-3.png" width="100%" height="50%"/>
+<img src="/man/figures/README-unnamed-chunk-3-3.png" width="100%" height="50%"/>
