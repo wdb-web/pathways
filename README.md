@@ -9,6 +9,7 @@ example workflow can be found here:
 You can also embed plots, for example:
 
 ``` r
+#devtools::install_github("wdb-web/pathways")
 library(clusterProfiler)
 library(pathways)
 library(tidyverse)
