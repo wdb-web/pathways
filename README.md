@@ -80,7 +80,7 @@ comp_dotplot(n@kegg_analyst$enrichKEGG$a)
 
 
 ``` r
-n@kegg_analyst$enrichKEGG$a@result\%>\% dplyr::filter(org=="KEGG") ->y
+n@kegg_analyst$enrichKEGG$a@result%>% dplyr::filter(org=="KEGG") ->y
 n@kegg_analyst$enrichKEGG$d@result->d23
 plot_funmap(d23)
 ```
