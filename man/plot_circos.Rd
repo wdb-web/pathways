@@ -27,7 +27,6 @@ lllll->da
 library(randomcoloR)
 library(circlize)
 library(ComplexHeatmap)
-FC<-c("ada"="mm")
 FC<-c(0.5,1.2,0.4,0.1,2)
 names(FC)<-y$geneID\%>\%unlist\%>\% str_split("/")\%>\%unlist \%>\%unique
 plot_circos(y,FC)
