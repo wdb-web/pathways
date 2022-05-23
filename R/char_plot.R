@@ -130,7 +130,7 @@ plot_add <- function(f,begin=begin,scale_height=scale_height,scale_color=scale_c
   
   
   n@data_mean%>%names%>%purrr::map(function(.x){n@data_mean%>%.[[.x]]->x;
-    colnames(x)%>%str_remove("X")->colnames(x)
+    colnames(x)%>%str_remove("^X")->colnames(x)
     colnames(x)[-1]<-paste(.x,colnames(x)[-1],sep = "_");return(x%>%as.data.frame())})%>%
     purrr::reduce(cbind)->mean
   mean[,c("group",get.all.sector.index()[get.all.sector.index()%in%f$line])]->mean
@@ -632,7 +632,7 @@ plot_chor<-function (f = f, metaProfiler, scale_height = 0.6, begin = 0,
                 get.all.sector.index(), ])
         mean <- n@data_mean %>% names %>% purrr::map(function(.x) {
             x <- n@data_mean %>% .[[.x]]
-            colnames(x) <- colnames(x) %>% str_remove("X")
+            colnames(x) <- colnames(x) %>% str_remove("^X")
             colnames(x)[-1] <- paste(.x, colnames(x)[-1], sep = "_")
             return(x %>% as.data.frame())
         }) %>% purrr::reduce(cbind)
