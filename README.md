@@ -69,7 +69,7 @@ pd = packLegend(list = v)
 draw(pd, x = unit(1, "cm"), y = unit(1, "cm"), just = c("left", "bottom"))
 ```
 
-<img src="vignettes/man/figures/README-cars-1.png" width="100%" height="50%"/>
+<img src="vignettes/man/figures/bicircos.png" width="100%" height="50%"/>
 
 In that case, don't forget to commit and push the resulting figure
 files, so they display on GitHub and CRAN.
