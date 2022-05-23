@@ -84,7 +84,7 @@ comp_dotplot(da@kegg_analyst$enrichKEGG$a)
 easy.clusterProfiler(n@kegg_analyst$enrichKEGG$a@result)
 ```
 
-<img src="vignettes/man/figures/README-cars-1.png" width="100%" height="50%"/>
+<img src="docs/reference/easy.clusterProfiler-1.png" width="100%" height="50%"/>
 
 
     clusterProfiler::dotplot(n@kegg_analyst$enrichKEGG$a)
