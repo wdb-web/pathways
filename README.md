@@ -73,11 +73,19 @@ files, so they display on GitHub and CRAN.
 
 
 ``` r
-comp_dotplot(da@kegg_analyst$enrichKEGG$a)
+comp_dotplot(n@kegg_analyst$enrichKEGG$a)
 ```
 
 <img src="vignettes/man/figures/README-ds-1.png" width="100%" height="50%"/>
 
+
+``` r
+n@kegg_analyst$enrichKEGG$a@result\%>\% dplyr::filter(org=="KEGG") ->y
+n@kegg_analyst$enrichKEGG$d@result->d23
+plot_funmap(d23)
+```
+
+<img src="vignettes/man/figures/funmap.png" width="100%" height="50%"/>
 
 
 ``` r
@@ -86,8 +94,10 @@ easy.clusterProfiler(n@kegg_analyst$enrichKEGG$a@result)
 
 <img src="docs/reference/easy.clusterProfiler-1.png" width="100%" height="50%"/>
 
+``` r
+ clusterProfiler::dotplot(n@kegg_analyst$enrichKEGG$a)
+```
 
-    clusterProfiler::dotplot(n@kegg_analyst$enrichKEGG$a)
 
 <img src="man/figures/README-unnamed-chunk-3-2.png" width="100%" height="50%"/>
 
