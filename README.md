@@ -8,6 +8,7 @@ example workflow can be found here:
 
 You can also embed plots, for example:
 
+# analy
 ``` r
 #devtools::install_github("wdb-web/pathways")
 library(clusterProfiler)
@@ -49,6 +50,7 @@ pathways_analy(data = data,group = group,org = "10090",scale = T,import_model=c(
 ```
 
 
+# big circos
 ``` r
 # load(system.file('data', 'Tes.Rdata',package = 'pathways'))
 n@kegg_analyst$compareClusterResult %>%
@@ -79,7 +81,7 @@ comp_dotplot(n@kegg_analyst$enrichKEGG$a)
 
 <img src="vignettes/man/figures/README-ds-1.png" width="100%" height="50%"/>
 
-
+# funmap
 ``` r
 n@kegg_analyst$enrichKEGG$a@result%>% dplyr::filter(org=="KEGG") ->y
 n@kegg_analyst$enrichKEGG$d@result->d23
@@ -88,12 +90,23 @@ plot_funmap(d23)
 
 <img src="vignettes/man/figures/funmap.png" width="100%" height="50%"/>
 
+# easy to clusterProfiler
+``` r
+easy.clusterProfiler(n@kegg_analyst$enrichKEGG$a@result)
+```
+
+<img src="docs/reference/easy.clusterProfiler-1.png" width="100%" height="50%"/>
+
+# circos
 
 ``` r
 easy.clusterProfiler(n@kegg_analyst$enrichKEGG$a@result)
 ```
 
 <img src="docs/reference/easy.clusterProfiler-1.png" width="100%" height="50%"/>
+
+
+# enrichplot
 
 ``` r
  clusterProfiler::dotplot(n@kegg_analyst$enrichKEGG$a)
