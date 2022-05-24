@@ -41,12 +41,14 @@ pathways_analy(data = data,group = group,org = "10090",scale = T,import_model=c(
 
 
 ``` r
+# system.file("data", "Tes.RData", package = "pathways")
 # kegg_pathway1(data=c("cid:5997","cid:65094","cid:5280335"))->da
 # kegg_pathway1(data=c("P0DTD3","Q9BYF1","Q9NRS4","Q9NYK1"))->da
 # kegg_pathway1(data=c("3.4.22.15","3.4.22.69","3.6.4.12","3.6.4.13"))->da
 # kegg_pathway1(c("6921","6923","8453","8883","9039","9978","79699"))->da
 # kegg_pathway1(a=c("6921","6923","8453","8883","9039","9978","79699"),b=c("P0DTD3","Q9BYF1","Q9NRS4","Q9NYK1"))->da
-
+# n@data$a[1,]%>%c%>%unlist%>%abs->data2
+# gsea<-GESA(data=data2,org="10090")
 ```
 
 
