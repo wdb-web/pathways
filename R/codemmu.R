@@ -2,7 +2,7 @@
 #'
 #' This package provides a central repository for methods to facilitate 
 #' project work
-#' @importMethodsFrom clusterProfiler enrichResult compareClusterResult
+#' @importMethodsFrom DOSE enrichResult compareClusterResult
 #' @import purrr
 #' @import dplyr
 #' @import data.table

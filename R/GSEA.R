@@ -6,7 +6,8 @@ get_GSEA<-function(data2,n,exponent = 1, minGSSize = 2, maxGSSize = 500,
                                       pAdjustMethod = "BH",
                                       verbose = TRUE,
                                       seed = FALSE,
-                                      by = 'fgsea') {data <- n  %>%
+                                      by = 'fgsea') {
+  data <- n  %>%
   dplyr::group_by(ID, Compound_ID) %>%
   dplyr::summarise(Compound_ID = str_split(Compound_ID, '\\|')%>%unlist) %>% dplyr::ungroup()
 GSEA_internal <- DOSE:::GSEA_internal(data2%>%.[order(- . )],  USER_DATA     = DOSE:::build_Anno(data, NA),exponent = 1,

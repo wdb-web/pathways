@@ -97,7 +97,7 @@ plotposition <- function(position="fill",newdata=newdata,scale_height=0.5) {
 
 add.name <- function(x=x,name=name,begin=0.8 ,col = "black", sector.index = NA,
                      font = 1, cex = 1.2,facing =  "clockwise",
-                     adj=c(0, (0.5)), niceFacing = TRUE,...) {
+                     adj=c(0, 0.5), niceFacing = TRUE,...) {
   x%>%as.data.frame()%>%unlist()%>% c->x
   name%>%as.data.frame()%>%unlist()%>% c->name
   for (i in seq_along(x)) {

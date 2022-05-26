@@ -2,7 +2,7 @@
 #'
 #' This package provides a central repository for methods to facilitate 
 #' project work
-#' @importMethodsFrom clusterProfiler enrichResult compareClusterResult
+#' @importMethodsFrom DOSE enrichResult compareClusterResult
 #' @import purrr
 #' @import dplyr
 #' @importFrom stringr str_split str_locate_all str_sub str_remove str_match
@@ -71,7 +71,7 @@ setClass("metaProfiler",
 ##' load(system.file("data", "Tes.Rdata",package = "pathways"))
 ##' }
 ##' 
-pathways_analy <- function(data,group,org="9606",p_model=c("phyper","fisher"),
+pathways_analy <- function(data,group,org="hsa",p_model=c("phyper","fisher"),
                            scale=T,
                  p.adjust.methods="holm",import_model=c("betweenness","degree")) {
   if(is.list(data)){

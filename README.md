@@ -78,8 +78,8 @@ pathways_analy(data = data,group = group,org = "10090",scale = T,import_model=c(
 # big circos
 ``` r
 # load(system.file('data', 'Tes.Rdata',package = 'pathways'))
-n@kegg_analyst$compareClusterResult %>%
-    clusterProfiler::filter(Description %in% c((n@kegg_analyst$compareClusterResult %>%
+n@kegg_analyst$compareClusterResult@compareClusterResult %>%
+    dplyr::filter(Description %in% c((n@kegg_analyst$compareClusterResult %>%
         group_by(Description) %>%
         summarise(n = n() > 1)) %>%
         dplyr::filter(n == T) %>%
@@ -127,7 +127,7 @@ easy.clusterProfiler(n@kegg_analyst$enrichKEGG$a@result)
 ``` r
 library(tidyverse)
 library(data.table)
-library(clusterProfiler)
+library(DOSE)
 load("pathways.RData")
 comp_dotplot(da@kegg_analyst$enrichKEGG$a)
 da->lllll
@@ -148,7 +148,7 @@ plot_circos(y,FC) # is a clusterProfiler@result data
 # enrichplot
 
 ``` r
- clusterProfiler::dotplot(n@kegg_analyst$enrichKEGG$a)
+ enrichplot::dotplot(n@kegg_analyst$enrichKEGG$a)
 ```
 
 

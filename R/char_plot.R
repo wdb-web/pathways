@@ -130,7 +130,7 @@ plot_add <- function(f,begin=begin,scale_height=scale_height,scale_color=scale_c
   
   
   n@data_mean%>%names%>%purrr::map(function(.x){n@data_mean%>%.[[.x]]->x;
-    colnames(x)%>%str_remove("^X")->colnames(x)
+    colnames(x)%>%str_remove("X")->colnames(x)
     colnames(x)[-1]<-paste(.x,colnames(x)[-1],sep = "_");return(x%>%as.data.frame())})%>%
     purrr::reduce(cbind)->mean
   mean[,c("group",get.all.sector.index()[get.all.sector.index()%in%f$line])]->mean
@@ -219,7 +219,7 @@ plot_add <- function(f,begin=begin,scale_height=scale_height,scale_color=scale_c
 ##' \dontrun{ 
 ##' library(tidyverse)
 ##' library(data.table)
-##' library(clusterProfiler)
+##' library(DOSE)
 ##' kegg_pathway1(data=list(a=c("cid:784","cid:962","cid:1004","cid:5862","cid:5886"),b=c("P0DTD3","Q9BYF1","Q9NRS4","Q9NYK1"),c=c("3.4.22.15","3.4.22.69","3.6.4.12","3.6.4.13"),
 ##' d=c("6921","6923","8453","8883","9039","9978","79699")))->da
 ##' save(da,file="pathways.RData")
@@ -334,7 +334,7 @@ o<-ggraph(g,layout="manual",x=bb$xy[,1] + table(d23$group)%>% seq_along()%>%
 ##' \dontrun{
 ##' library(tidyverse)
 ##' library(data.table)
-##' library(clusterProfiler)
+##' library(DOSE)
 ##' kegg_pathway1(data=list(a=c("cid:784","cid:962","cid:1004","cid:5862","cid:5886"),b=c("P0DTD3","Q9BYF1","Q9NRS4","Q9NYK1"),c=c("3.4.22.15","3.4.22.69","3.6.4.12","3.6.4.13"),
 ##' d=c("6921","6923","8453","8883","9039","9978","79699")))->da
 ##' save(da,file="pathways.RData")
@@ -475,8 +475,8 @@ grid.draw(lgd_list_vertical)
 #' @examples
 ##' \dontrun{
 ##' load(system.file("data", "Tes.Rdata",package = "pathways"))
-##'  n@kegg_analyst$compareClusterResult%>%clusterProfiler::filter(
-##' Description%in%c((n@kegg_analyst$compareClusterResult%>%group_by(Description)%>%
+##'  n@kegg_analyst$compareClusterResult@compareClusterResult%>%dplyr::filter(
+##' Description%in%c((n@kegg_analyst$compareClusterResult@compareClusterResult%>%group_by(Description)%>%
                     ##'                     summarise(n=n()>1))%>%dplyr::filter(n==T)%>%.$Description)|qvalue     <0.05
 ##' )%>%as.data.frame()->f
 ##' circos.clear()
@@ -632,7 +632,7 @@ plot_chor<-function (f = f, metaProfiler, scale_height = 0.6, begin = 0,
                 get.all.sector.index(), ])
         mean <- n@data_mean %>% names %>% purrr::map(function(.x) {
             x <- n@data_mean %>% .[[.x]]
-            colnames(x) <- colnames(x) %>% str_remove("^X")
+            colnames(x) <- colnames(x) %>% str_remove("X")
             colnames(x)[-1] <- paste(.x, colnames(x)[-1], sep = "_")
             return(x %>% as.data.frame())
         }) %>% purrr::reduce(cbind)

@@ -49,15 +49,15 @@ This is a basic example which shows you how to solve a common problem:
 ```{r cars}
 library(pathways)
 library(dplyr)
-library(clusterProfiler)
+library(DOSE)
 library(pathways)
 library(tidyverse)
 library(igraph)
 library(ggraph)
 load(system.file("data", "Tes.Rdata",package = "pathways"))
- n@kegg_analyst$compareClusterResult%>%clusterProfiler::filter(org=="KEGG")%>%
- clusterProfiler::filter(
-(Description%in%c((n@kegg_analyst$compareClusterResult%>%group_by(Description)%>%
+ n@kegg_analyst$compareClusterResult@compareClusterResult%>%dplyr::filter(org=="KEGG")%>%
+ dplyr::filter(
+(Description%in%c((n@kegg_analyst$compareClusterResult@compareClusterResult%>%group_by(Description)%>%
                     summarise(n=n()>1))%>%
                     dplyr::filter(n==T)%>%.$Description)|qvalue     <0.05)
 )%>%as.data.frame()->f
