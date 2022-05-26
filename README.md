@@ -33,7 +33,6 @@ kegg_pathway1()
 ```
 
 
-您还可以嵌入绘图，例如：
 # analy
 ``` r
 #devtools::install_github("wdb-web/pathways")
