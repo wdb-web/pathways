@@ -10,8 +10,21 @@ use GitHub Actions to re-render `README.Rmd` every time you push. An
 example workflow can be found here:
 <https://github.com/r-lib/actions/tree/v1/examples>.
 
-You can also embed plots, for example:
 
+＃基本的设计
+
+```
+easy.clusterProfiler()
+pathways_analy()
+plot_chor()
+plot_circos()
+plot_funmap()
+kegg_pathway1()
+
+```
+
+
+您还可以嵌入绘图，例如：
 # analy
 ``` r
 #devtools::install_github("wdb-web/pathways")
