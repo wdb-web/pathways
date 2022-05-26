@@ -11,7 +11,7 @@ example workflow can be found here:
 <https://github.com/r-lib/actions/tree/v1/examples>.
 
 
-＃ 基本的设计
+# Basic design
 
 ```
 easy.clusterProfiler()
