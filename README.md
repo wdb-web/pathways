@@ -34,7 +34,7 @@ kegg_pathway1()
 # analy
 ``` r
 #devtools::install_github("wdb-web/pathways")
-library(clusterProfiler)
+library(DOSE)
 library(pathways)
 library(tidyverse)
 library(igraph)
