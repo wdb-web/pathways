@@ -10,6 +10,15 @@ use GitHub Actions to re-render `README.Rmd` every time you push. An
 example workflow can be found here:
 <https://github.com/r-lib/actions/tree/v1/examples>.
 
+# Installation
+
+You can install the development version of pathways from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("wdb-web/pathways")
+```
+
 
 # Basic design
 
