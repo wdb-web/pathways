@@ -1,5 +1,5 @@
 # pathways
-Pathways integrates enrichment analysis algorithms, databases and visualizations. It currently includes 13 databases, 2 enrichment analysis algorithms, design flounder diagrams, integrated enrichment analysis circle diagrams, functional classification diagrams, etc. Save the results in metaProfiler format. In addition, the package is based on low-level graph functions, Professor Yu Guangchuang's visual enrichment analysis results and joint multi-omics analysis (metabolism, transcriptome, protein, enzyme) to visualize the associations between datasets to mine the correlation between multi-omics potential connection.
+Pathways integrates enrichment analysis algorithms, databases and visualizations. It currently includes 10 databases, 2 enrichment analysis algorithms, design flounder diagrams, integrated enrichment analysis circle diagrams, functional classification diagrams, etc. Save the results in metaProfiler format. In addition, the package is based on low-level graph functions, Professor Yu Guangchuang's visual enrichment analysis results and joint multi-omics analysis (metabolism, transcriptome, protein, enzyme) to visualize the associations between datasets to mine the correlation between multi-omics potential connection.
 
 
 You'll still need to render `README.Rmd` regularly, to keep `README.md`
