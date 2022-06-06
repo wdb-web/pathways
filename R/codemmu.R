@@ -556,7 +556,7 @@ kegg_pathway1 <- function(data=c("list or data"),org="9606",p_model=c("phyper","
                             p.adjust.methods="holm",import_model=c("degree","betweenness")) {
  options(dplyr.summarise.inform = FALSE)
    pathways<-get_org(org)
-   pathways$org<- factor(pathways$org, level=c("KEGG",pathways$org%>%unique%>%.[.!="KEGG"]) )
+   pathways$org<- factor(pathways$org, level=c("KEGG",pathways$org%>%unique%>%.[.!="KEGG"]%>% as.character()) )
   pathways<- pathways[order(pathways$org),]%>% .[!duplicated(pathways$name) ,]
    s <- new("metaProfiler",org_organism =org)
     s@org<-pathways%>%as.data.frame()
