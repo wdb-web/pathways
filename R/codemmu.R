@@ -42,14 +42,12 @@ if(is.null(enrichKEGG)){return(NULL)}
    # ad<-""
   #.x<-"KEGG"
    ad<- names( table(d2$org)[table(d2$org)>1])%>%unique%>%purrr::map(function(.x){
-    d2[which(d2$org==.x),]->d23
+    pathw<- tryCatch(  {d2[which(d2$org==.x),]->d23
 
     d23%>%dplyr::group_by(ID)%>%dplyr::summarise(geneID %>% str_split("/")%>%unlist())%>%setNames(c("ID", "Compound_ID" ))%>%
       ungroup()%>%as.data.table()->da
 
   if(sum(table(da$Compound_ID)>1)){
-
-
     d23%>%ungroup()%>%dplyr::select(ID,geneID)->d
     da[ , if (.N > 1) 
       transpose(combn(ID, 2L, simplify = FALSE)), by = Compound_ID
@@ -84,10 +82,18 @@ data.frame(l2$Group.1,l2$Group.2,l2$Sum/l2$everysum)->l
     d23[d23$ID!="1",]->d23
        return(d23%>%.[,c(which(colnames(d23)!="org"),which(colnames(d23)=="org"))])
     }
-  })%>%purrr::reduce(rbind)
+  }, error = function(e) return({
+      d2[which(d2$org==.x),]->d23
+      d23$import<-0
+      return(d23)
+      }))
+           return(pathw)
+     }
+)%>%purrr::reduce(rbind)
     ad%>%data.frame ->enrichKEGG@result
    # enrichKEGG@result$import[is.na(enrichKEGG@result$import)]<-0
     rownames(enrichKEGG@result)<-enrichKEGG@result$ID
+   
     return(enrichKEGG)
 }
   get_all_p <- function(g){
