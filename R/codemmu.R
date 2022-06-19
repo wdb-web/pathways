@@ -582,30 +582,51 @@ kegg_pathway1 <- function(data=c("list or data"),org="9606",p_model=c("phyper","
     #data[[1]]->name
    # data%>% lapply(function(.x){.get_kegg_analyst(name = .x,org = org,kegg_pathways=kegg_pathways,import_model=import_model,enrichKEGG=kk,everyorg = kegg_pathways,
      #                              p_model=p_model,p.adjust.methods=p.adjust.methods)})->y
-     data%>%purrr::map(function(.x){.get_kegg_analyst(name = .x,org = org,kegg_pathways=pathways,import_model=import_model,enrichKEGG=kk,everyorg = pathways,
-                                    p_model=p_model,p.adjust.methods=p.adjust.methods)})->y
-    num<-y%>% lapply( is.null)%>%unlist%>%{!.}%>%which
-    num%>% purrr::map( function(.x){y[[.x]]} )->y
+   y <- data %>% purrr::map(function(.x) {
+     tryCatch( return( .get_kegg_analyst(name = .x, org = org, kegg_pathways = pathways,
+            import_model = import_model, enrichKEGG = kk, everyorg = pathways,
+            p_model = p_model, p.adjust.methods = p.adjust.methods)), error = function(e) return(NA), finally = print("OK"))
+    })
+    
+   num <- y %>% lapply(is.null) %>% unlist %>% {
+        !.
+    } %>% which
+    y <- num %>% purrr::map(function(.x) {
+        y[[.x]]
+    })
     x <- new("compareClusterResult")
-    Result <- function(.x,.y) {
-      if(is.null(.x)){return(NULL)}
-      if(ncol(.x@result)==9){.x@result$import<-""}
-      data.frame(Cluster=.y,.x@result)
+    Result <- function(.x, .y) {
+        if (is.null(.x)) {
+            return(NULL)
+        }
+        if (is.na(.x)) {
+            return(NULL)
+        }
+        if (ncol(.x@result) == 9) {
+            .x@result$import <- ""
+        }
+        data.frame(Cluster = .y, .x@result)
     }
-    purrr::map2(y, names(y),~Result(.x,.y))%>%do.call(rbind,.)->g
-    x@compareClusterResult<-g
-
+    g <- purrr::map2(y, names(y), ~Result(.x, .y)) %>% do.call(rbind,
+        .)
+    x@compareClusterResult <- g
     gene <- function(.x) {
-      if(is.null(.x)){return(NULL)}
-      .x@gene
+        if (is.null(.x)) {
+            return(NULL)
+        }
+        if (is.na(.x)) {
+            return(NULL)
+        }
+        .x@gene
     }
-    purrr::map(y,~gene(.x))->x@geneClusters
-    factor(x@compareClusterResult$Cluster)->b
-x@keytype<-"id"
-    x@compareClusterResult$Cluster<-factor(x@compareClusterResult$Cluster )
-    x@compareClusterResult%>% as.data.frame()->x@compareClusterResult
-    x@fun="enrichDO"
-    s@kegg_analyst<-list(enrichKEGG=y,compareClusterResult=x ,every=get_all_p(g=x@compareClusterResult)   )
+    x@geneClusters <- purrr::map(y, ~gene(.x))
+    b <- factor(x@compareClusterResult$Cluster)
+    x@keytype <- "id"
+    x@compareClusterResult$Cluster <- factor(x@compareClusterResult$Cluster)
+    x@compareClusterResult <- x@compareClusterResult %>% as.data.frame()
+    x@fun = "enrichDO"
+    s@kegg_analyst <- list(enrichKEGG = y, compareClusterResult = x,
+        every = get_all_p(g = x@compareClusterResult))
     return(s)
   }
 
