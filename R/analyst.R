@@ -1,12 +1,12 @@
 #' packagename: Package containing tools support project work.
 #'
-#' This package provides a central repository for methods to facilitate 
+#' This package provides a central repository for methods to facilitate
 #' project work
 #' @importMethodsFrom DOSE enrichResult compareClusterResult
 #' @import purrr
 #' @import dplyr
 #' @importFrom stringr str_split str_locate_all str_sub str_remove str_match
-#' @importFrom methods setClass news 
+#' @importFrom methods setClass news
 setClass("metaProfiler",
          slots = c(
            kegg_analyst = "list",
@@ -43,8 +43,8 @@ setClass("metaProfiler",
 #' @examples
 #'
 ##' \dontrun{
-##' 
-##' 
+##'
+##'
 ##' x<-readxl::read_xlsx(system.file("data", "Col-top50.xlsx", package = "pathways"))
 ##' y<-readxl::read_xlsx(system.file("data", "metadata.xlsx", package = "pathways"))%>% as.data.frame()%>% na.omit
 
@@ -66,11 +66,11 @@ setClass("metaProfiler",
 ##' data[[2]]<-data[[2]][names,]
 ##' pathways_analy(data = data,group = group,org = "10090",scale = T)->n
 
-##' 
+##'
 ##' # or
 ##' load(system.file("data", "Tes.Rdata",package = "pathways"))
 ##' }
-##' 
+##'
 pathways_analy <- function(data,group,org="9606",p_model=c("phyper","fisher"),
                            scale=T,
                  p.adjust.methods="holm",import_model=c("betweenness","degree")) {
@@ -85,6 +85,6 @@ pathways_analy <- function(data,group,org="9606",p_model=c("phyper","fisher"),
   slot(y, "data_mean") <-h$men
   slot(y, "data") <-data
   slot(y, "group") <-group%>%as.data.frame()
-  
+
   return(y)
 }
