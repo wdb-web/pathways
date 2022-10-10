@@ -103,7 +103,7 @@ get_all_p <- function(g){
   k[is.na(k)]<-1
   .get_p_combine(k[1,-1],method = 'fisher',w =n[,2])$p_value
   map_dfr(k[,-1]%>%t%>%as.data.frame,~.get_p_combine(.x,method = 'fisher',w =n[,2])$p_value)%>%t%>%as.data.frame()->p
-  rownames(p)<-k$ID
+  #rownames(p)<-k$ID
   p.adjust(p$V1,method = "BH")->p.adjust
   p.adjust(p$V1,method = "fdr")->qvalue
   data.frame( pvalue=p,p.adjust=p.adjust,qvalue=qvalue)->p.data
@@ -111,7 +111,6 @@ get_all_p <- function(g){
   g%>%dplyr::group_by(ID,Description)%>%dplyr::summarise(geneID=geneID%>%
                                                            paste(sep = "/",collapse = "/"),Count=sum(Count))->data
 
-  colnames(g)
 
 
   full_join(data,p.data)->data
