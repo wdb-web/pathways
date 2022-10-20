@@ -22,7 +22,7 @@ pathways_analy to pathways and analy
 \dontrun{ 
 library(tidyverse)
 library(data.table)
-library(clusterProfiler)
+library(DOSE)
 kegg_pathway1(data=list(a=c("cid:784","cid:962","cid:1004","cid:5862","cid:5886"),b=c("P0DTD3","Q9BYF1","Q9NRS4","Q9NYK1"),c=c("3.4.22.15","3.4.22.69","3.6.4.12","3.6.4.13"),
 d=c("6921","6923","8453","8883","9039","9978","79699")))->da
 save(da,file="pathways.RData")

@@ -475,8 +475,8 @@ grid.draw(lgd_list_vertical)
 #' @examples
 ##' \dontrun{
 ##' load(system.file("data", "Tes.Rdata",package = "pathways"))
-##'  n@kegg_analyst$compareClusterResult@compareClusterResult%>%dplyr::filter(
-##' Description%in%c((n@kegg_analyst$compareClusterResult@compareClusterResult%>%group_by(Description)%>%
+##'  n@kegg_analyst$compareClusterResult@result%>%dplyr::filter(
+##' Description%in%c((n@kegg_analyst$compareClusterResult%>%group_by(Description)%>%
                     ##'                     summarise(n=n()>1))%>%dplyr::filter(n==T)%>%.$Description)|qvalue     <0.05
 ##' )%>%as.data.frame()->f
 ##' circos.clear()

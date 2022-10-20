@@ -59,7 +59,7 @@ data\%>\% setNames(c("a","b"))->data
 names<-match(data[[1]]\%>\% rownames,data[[2]]\%>\% rownames)
 data[[2]]<-data[[2]][names,]
 pathways_analy(data = data,group = group,org = "10090",scale = T)->n
-#save(n,file="Tes.Rdata")
+
 # or
 load(system.file("data", "Tes.Rdata",package = "pathways"))
 }

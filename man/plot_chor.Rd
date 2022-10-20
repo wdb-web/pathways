@@ -40,7 +40,7 @@ plot_chor is plot metaProfiler data
 \examples{
 \dontrun{
 load(system.file("data", "Tes.Rdata",package = "pathways"))
- n@kegg_analyst$compareClusterResult\%>\%clusterProfiler::filter(
+ n@kegg_analyst$compareClusterResult@result\%>\%dplyr::filter(
 Description\%in\%c((n@kegg_analyst$compareClusterResult\%>\%group_by(Description)\%>\%
                     summarise(n=n()>1))\%>\%dplyr::filter(n==T)\%>\%.$Description)|qvalue     <0.05
 )\%>\%as.data.frame()->f
