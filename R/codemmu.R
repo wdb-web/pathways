@@ -559,8 +559,7 @@ kegg_pathway1 <- function(data=c("list or data"),org="9606",p_model=c("phyper","
    pathways<-get_org(org)
    pathways$org<- factor(pathways$org, level=c("KEGG",pathways$org%>%unique%>%.[.!="KEGG"]) )
   pathways<- pathways[order(pathways$org),]%>% .[!duplicated(pathways$name) ,]}
-  if(!is.null(org)){  pathways=org_db
-  }
+  if(!is.null(org_db)){  pathways=org_db}
    s <- new("metaProfiler",org_organism =org)
     s@org<-pathways%>%as.data.frame()
     # get_anong(org)%>%.[[1]]->bb
