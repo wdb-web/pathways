@@ -1,9 +1,35 @@
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # pathways
 
 <!-- badges: start -->
+
+<!-- badges: end -->
+
+The goal of pathways is to …
+
+## Installation
+
+You can install the development version of pathways from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+#devtools::install_github("wdb-web/pathways")
+```
+
+## Example
+
+# pathways
+
+<!-- badges: start -->
+
 <!-- badges: end -->
 
 The goal of pathways is to …
@@ -19,31 +45,6 @@ You can install the development version of pathways like so:
 ## Example
 
 This is a basic example which shows you how to solve a common problem:
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
-# pathways
-
-<!-- badges: start -->
-<!-- badges: end -->
-
-The goal of pathways is to …
-
-## Installation
-
-You can install the development version of pathways like so:
-
-``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
-```
-
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-``` r
-library(pathways)
-## basic example code
-```
 
 What is special about using `README.Rmd` instead of just `README.md`?
 You can include R chunks like so:
@@ -80,13 +81,16 @@ list(a = data2 %>%
     as.data.frame(), b = genes %>%
     t %>%
     as.data.frame()) -> data
+load(system.file("data", "Tes.Rdata", package = "pathways"))
+
 pathways_analy(data = data, group = group, org = "mmu", scale = T) -> n
 #> using block.splsda analyst
+
 
 # or load(system.file('data', 'Tes.Rdata',package = 'pathways'))
 ```
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
+You'll still need to render `README.Rmd` regularly, to keep `README.md`
 up-to-date. `devtools::build_readme()` is handy for this. You could also
 use GitHub Actions to re-render `README.Rmd` every time you push. An
 example workflow can be found here:
@@ -112,19 +116,24 @@ pd = packLegend(list = v)
 draw(pd, x = unit(1, "cm"), y = unit(1, "cm"), just = c("left", "bottom"))
 ```
 
-<img src="man/figures/README-pressure-1.png" width="100%" height="50%" />
+<img src="help/figures/README-pressure-1.png" width="100%" height="50%"/>
 
-In that case, don’t forget to commit and push the resulting figure
+In that case, don't forget to commit and push the resulting figure
 files, so they display on GitHub and CRAN.
 
 ``` r
-clusterProfiler::dotplot(n@kegg_analyst$enrichKEGG$a)
+easy.clusterProfiler(n@kegg_analyst$enrichKEGG$a@result)
 ```
 
-<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" height="50%" />
+<img src="help/figures/README-unnamed-chunk-3-1.png" width="100%" height="50%"/>
+
+
+    clusterProfiler::dotplot(n@kegg_analyst$enrichKEGG$a)
+
+<img src="man/figures/README-unnamed-chunk-3-2.png" width="100%" height="50%"/>
 
 ``` r
 enrichplot::emapplot(enrichplot::pairwise_termsim(n@kegg_analyst$compareClusterResult))
 ```
 
-<img src="man/figures/README-unnamed-chunk-3-2.png" width="100%" height="50%" />
+<img src="help/figures/README-unnamed-chunk-3-3.png" width="100%" height="50%"/>
