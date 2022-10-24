@@ -294,7 +294,12 @@ data.frame(l2$Group.1,l2$Group.2,l2$Sum/l2$everysum)->l
     full_join(Ecs,by = c("ID", "name", "group", "org"))%>%
     dplyr::mutate(name, group,org,Compound_ID,Gene_id,  Protacxns_id,Ecs_id)
     fuu[is.na(fuu)]<-"NULL"
-
+    fuu$Compound_ID=unlist(fuu$Compound_ID)
+    fuu$Gene_id=unlist(fuu$Gene_id)
+    
+    fuu$Protacxns_id=unlist(fuu$Protacxns_id)
+    fuu$Ecs_id=unlist(fuu$Ecs_id)
+    
     fuu %>%return
      
   #  ,model="ec"
@@ -561,6 +566,11 @@ kegg_pathway1 <- function(data=c("list or data"),org="9606",p_model=c("phyper","
   pathways<- pathways[order(pathways$org),]%>% .[!duplicated(pathways$name) ,]}
   if(!is.null(org_db)){  pathways=org_db
   }
+  pathways$Compound_ID=unlist(pathways$Compound_ID)
+  pathways$Gene_id=unlist(pathways$Gene_id)
+  
+  pathways$Protacxns_id=unlist(pathways$Protacxns_id)
+  pathways$Ecs_id=unlist(pathways$Ecs_id)
    s <- new("metaProfiler",org_organism =org)
     s@org<-pathways%>%as.data.frame()
     # get_anong(org)%>%.[[1]]->bb
