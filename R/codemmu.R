@@ -33,7 +33,8 @@ setClass("metaProfiler",
 )
 
 #import_model=c("betweenness","degree")
-  .get_import <- function(enrichKEGG,import_model="degree",kegg_org) {
+.get_import <- function(enrichKEGG,import_model="degree",kegg_org) {
+  require(data.table)
 # n@kegg_analyst$enrichKEGG$a@result->d2
 if(is.null(enrichKEGG)){return(NULL)}
     enrichKEGG@result  ->d2
@@ -41,7 +42,47 @@ if(is.null(enrichKEGG)){return(NULL)}
     d2[,colnames(d2)!="import" ]->d2
    # ad<-""
   #.x<-"KEGG"
-   ad<- names( table(d2$org)[table(d2$org)>1])%>%unique%>%purrr::map(function(.x){
+    if(length(names( table(d2$org)[table(d2$org)>1]))==1){
+      d2->d23
+      
+      d23%>%dplyr::group_by(ID)%>%dplyr::summarise(geneID %>% str_split("/")%>%unlist())%>%setNames(c("ID", "Compound_ID" ))%>%
+        ungroup()%>%as.data.table()->da
+      
+      if(sum(table(da$Compound_ID)>1)){
+        d23%>%ungroup()%>%dplyr::select(ID,geneID)->d
+        da[ , if (.N > 1) 
+          data.table::transpose(combn(ID, 2L, simplify = FALSE)), by = Compound_ID
+        ][ , .(Sum = .N), keyby = .(Group.1 = V1, Group.2 = V2)]->l 
+        colnames(d)<-c("Group.1","n")
+        full_join(l,d, by = "Group.1")%>%na.omit()%>%full_join(d,by=c("Group.2"="Group.1"))%>%na.omit()->l2
+        apply(l2[,4:5],1,function(.x){.x%>% str_split("/")%>%unlist%>%unique%>% length })->l2$everysum
+        data.frame(l2$Group.1,l2$Group.2,l2$Sum/l2$everysum)->l
+        colnames(l)<-c("from","to","weight")
+        l%>%dplyr::filter(weight>0.25)->l
+        net_pc<-igraph::graph_from_data_frame(
+          d=l[,1:2],
+          directed=F)
+        igraph::E(net_pc)$weight <- c(l[,3]);
+        if(import_model[1]=="betweenness"){
+          igraph::betweenness(net_pc,weights=l[,3],nobigint = F,directed=F,normalized=T)%>%
+            as.data.frame()->import
+        }
+        if(import_model[1]=='degree'){
+          a<-rbind(l[,c(1,3)],setNames(l[,2:3],names(l[,c(1,3)])))%>%ungroup%>%group_by(from)%>%dplyr::summarise(import=sum(weight/(length(unique(c(l[,1:2]%>%unlist)))-1)))%>%as.data.frame()
+          a[,-1]%>%as.data.frame()->import
+          rownames(import)<- a$from ;
+        }
+        if(import_model[1]=="cloness"){
+          igraph::closeness(net_pc,normalized=F)%>%as.data.frame()->import
+        }    
+        colnames(import)[1]<-"import"
+        import$ID <-import%>%rownames()
+        enrichKEGG@keytype<-"kegg"
+        d23%>%full_join(import,by = "ID")->d23;
+        d23[d23$ID!="1",]->d23
+        ad<-d23%>%.[,c(which(colnames(d23)!="org"),which(colnames(d23)=="org"))]
+    }else{ ad<- names( table(d2$org)[table(d2$org)>1])%>%unique%>%
+     purrr::map(function(.x){
     d2[which(d2$org==.x),]->d23
 
     d23%>%dplyr::group_by(ID)%>%dplyr::summarise(geneID %>% str_split("/")%>%unlist())%>%setNames(c("ID", "Compound_ID" ))%>%
@@ -84,12 +125,12 @@ data.frame(l2$Group.1,l2$Group.2,l2$Sum/l2$everysum)->l
     d23[d23$ID!="1",]->d23
        return(d23%>%.[,c(which(colnames(d23)!="org"),which(colnames(d23)=="org"))])
     }
-  })%>%purrr::reduce(rbind)
+  })%>%purrr::reduce(rbind)}
     ad%>%data.frame ->enrichKEGG@result
    # enrichKEGG@result$import[is.na(enrichKEGG@result$import)]<-0
     rownames(enrichKEGG@result)<-enrichKEGG@result$ID
     return(enrichKEGG)
-}
+}}
   get_all_p <- function(g){
     g%>%dplyr::group_by(Cluster)%>%dplyr::summarise(w=BgRatio%>%str_split("/")%>%unlist()%>%.[2])%>%ungroup()->n
     g%>%dplyr::select(Cluster,ID ,pvalue)%>%dplyr::group_split(Cluster)%>%purrr::map(~.x%>%.[,-1])%>%purrr::reduce(full_join,by="ID")->k
@@ -442,7 +483,14 @@ data.frame(l2$Group.1,l2$Group.2,l2$Sum/l2$everysum)->l
       enrichKEGG@pAdjustMethod<-p.adjust.methods
       enrichKEGG@universe<-""
       #n@kegg_analyst$enrichKEGG$b->enrichKEGG
-      .get_import(enrichKEGG,import_model=import_model,kegg_org  = everyorg)->enrichKEGG
+      enrichKEGG=tryCatch(.get_import(enrichKEGG = enrichKEGG,
+                           import_model=import_model,
+                           kegg_org  = everyorg)
+                          , error = function(e){
+                          print(e)
+                          return(enrichKEGG)
+                          })
+   
       enrichKEGG@result$import[is.na(enrichKEGG@result$import)]<-0
       enrichKEGG@keytype<- "Compound"
       enrichKEGG@ontology<- "Compound"
@@ -555,7 +603,7 @@ name%>%unique()->f
 # kegg_pathway1(data=c("cid:5997","cid:65094","cid:5280335"))->da
 # kegg_pathway1(data=c("P0DTD3","Q9BYF1","Q9NRS4","Q9NYK1"))->da
 # kegg_pathway1(data=c("3.4.22.15","3.4.22.69","3.6.4.12","3.6.4.13"))->da
-#kegg_pathway1(c("6921","6923","8453","8883","9039","9978","79699"))->da
+#kegg_pathway1(n@kegg_analyst$enrichKEGG$a@gene,org=n@org_organism)->da
 
 kegg_pathway1 <- function(data=c("list or data"),org="9606",p_model=c("phyper","fisher"),
                             p.adjust.methods="holm",import_model=c("degree","betweenness"),org_db=NULL) {
@@ -642,7 +690,6 @@ x@keytype<-"id"
 #' kegg_level(n)
   
   kegg_level=function(n,level=2){
-    n@kegg_analyst$enrichKEGG
     org1=n@org[n@org$org=="KEGG",]
     
     x<-readLines("https://www.genome.jp/kegg-bin/download_htext?htext=br08901.keg&format=htext&filedir=")
