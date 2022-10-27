@@ -33,12 +33,12 @@ setClass("metaProfiler",
 )
 
 #import_model=c("betweenness","degree")
-.get_import <- function(enrichKEGG,import_model="degree",kegg_org) {
+.get_import <- function(enrichKEGG,import_model="degree",kegg_org,Count=1) {
 library(data.table)
 # n@kegg_analyst$enrichKEGG$a@result->d2
 if(is.null(enrichKEGG)){return(NULL)}
     enrichKEGG@result  ->d2
-    d2%>%dplyr::filter(Count>1)->d2
+    d2%>%dplyr::filter(Count>Count)->d2
     d2[,colnames(d2)!="import" ]->d2
    # ad<-""
   #.x<-"KEGG"
@@ -367,7 +367,7 @@ k<-fread("http://rest.kegg.jp/link/pathway/cpd",header = F)%>% setNames(c("Compo
   #name<-data=c("P0DTD3","Q9BYF1","Q9NRS4","Q9NYK1")
   .get_kegg_analyst<-function(name="list Compound_ID or gean or ec or par", org=org,
   p_model=p_model,kegg_pathways=kegg_pathways,
-  p.adjust.methods=p.adjust.methods, qvalue.methods="fdr",enrichKEGG=kk,import_model=import_model,everyorg=everyorg){
+  p.adjust.methods=p.adjust.methods, qvalue.methods="fdr",enrichKEGG=kk,import_model=import_model,everyorg=everyorg,Count=Count){
     if(name[1]%>%str_detect("cid:\\d")){
       cat("doing  Compound analyst \n")
       name%>%unique()->f
@@ -388,14 +388,14 @@ k<-fread("http://rest.kegg.jp/link/pathway/cpd",header = F)%>% setNames(c("Compo
       enrichKEGG@pAdjustMethod<-p.adjust.methods
       enrichKEGG@universe<-""
       #n@kegg_analyst$enrichKEGG$b->enrichKEGG
-      enrichKEGG=tryCatch(.get_import(enrichKEGG = enrichKEGG,
+        enrichKEGG=tryCatch(.get_import(enrichKEGG = enrichKEGG,
                            import_model=import_model,
                            kegg_org  = everyorg)
                           , error = function(e){
                           print(e)
                           enrichKEGG
                           })
-   
+if(! "import"%in%colnames(enrichKEGG@result)){enrichKEGG@result$import<-0}
       enrichKEGG@result$import[is.na(enrichKEGG@result$import)]<-0
       enrichKEGG@keytype<- "Compound"
       enrichKEGG@ontology<- "Compound"
@@ -427,7 +427,14 @@ k<-fread("http://rest.kegg.jp/link/pathway/cpd",header = F)%>% setNames(c("Compo
       enrichKEGG@pAdjustMethod<-p.adjust.methods
       enrichKEGG@universe<-""
       #n@kegg_analyst$enrichKEGG$b->enrichKEGG
-      .get_import(enrichKEGG,import_model=import_model,kegg_org  = everyorg)->enrichKEGG
+      enrichKEGG=tryCatch(.get_import(enrichKEGG = enrichKEGG,
+                           import_model=import_model,
+                           kegg_org  = everyorg)
+                          , error = function(e){
+                          print(e)
+                          enrichKEGG
+                          })
+if(! "import"%in%colnames(enrichKEGG@result)){enrichKEGG@result$import<-0}
       enrichKEGG@result$import[is.na(enrichKEGG@result$import)]<-0
       enrichKEGG@keytype<- "par"
       enrichKEGG@ontology<- "par"
@@ -460,12 +467,26 @@ k<-fread("http://rest.kegg.jp/link/pathway/cpd",header = F)%>% setNames(c("Compo
       enrichKEGG@pAdjustMethod<-p.adjust.methods
       enrichKEGG@universe<-""
       #n@kegg_analyst$enrichKEGG$b->enrichKEGG
-      .get_import(enrichKEGG,import_model=import_model,kegg_org  = everyorg)->enrichKEGG
+      enrichKEGG=tryCatch(.get_import(enrichKEGG = enrichKEGG,
+                           import_model=import_model,
+                           kegg_org  = everyorg)
+                          , error = function(e){
+                          print(e)
+                          enrichKEGG
+                          })
+if(! "import"%in%colnames(enrichKEGG@result)){enrichKEGG@result$import<-0}
       enrichKEGG@result$import[is.na(enrichKEGG@result$import)]<-0
       enrichKEGG@keytype<- "Ecs"
       enrichKEGG@ontology<- "Ecs"
       enrichKEGG@readable<- FALSE
-      .get_import(enrichKEGG,import_model=import_model,kegg_org  = everyorg)->enrichKEGG
+         enrichKEGG=tryCatch(.get_import(enrichKEGG = enrichKEGG,
+                           import_model=import_model,
+                           kegg_org  = everyorg)
+                          , error = function(e){
+                          print(e)
+                          enrichKEGG
+                          })
+if(! "import"%in%colnames(enrichKEGG@result)){enrichKEGG@result$import<-0}
       enrichKEGG@result$import[is.na(enrichKEGG@result$import)]<-0
 
       enrichKEGG@result[order(enrichKEGG@result$pvalue),]->enrichKEGG@result
@@ -493,7 +514,14 @@ name%>%unique()->f
       enrichKEGG@pAdjustMethod<-p.adjust.methods
       enrichKEGG@universe<-""
       #n@kegg_analyst$enrichKEGG$b->enrichKEGG
-      .get_import(enrichKEGG,import_model=import_model,kegg_org  = everyorg)->enrichKEGG
+       enrichKEGG=tryCatch(.get_import(enrichKEGG = enrichKEGG,
+                           import_model=import_model,
+                           kegg_org  = everyorg)
+                          , error = function(e){
+                          print(e)
+                          enrichKEGG
+                          })
+if(! "import"%in%colnames(enrichKEGG@result)){enrichKEGG@result$import<-0}
       enrichKEGG@result$import[is.na(enrichKEGG@result$import)]<-0
       enrichKEGG@keytype<- "Gene"
       enrichKEGG@ontology<- "Gene"
@@ -511,7 +539,7 @@ name%>%unique()->f
 #kegg_pathway1(n@kegg_analyst$enrichKEGG$a@gene,org=n@org_organism)->da
 
 kegg_pathway1 <- function(data=c("list or data"),org="9606",p_model=c("phyper","fisher"),
-                            p.adjust.methods="holm",import_model=c("degree","betweenness"),org_db=NULL) {
+                            p.adjust.methods="holm",import_model=c("degree","betweenness"),org_db=NULL,Count=1) {
  options(dplyr.summarise.inform = FALSE)
  library(dplyr)
  library(data.table)
@@ -535,7 +563,7 @@ kegg_pathway1 <- function(data=c("list or data"),org="9606",p_model=c("phyper","
     if(is.list(data)&(length(data)==1)){
       .get_kegg_analyst(name = data[[1]],org = org,kegg_pathways=pathways,import_model=import_model,
                         p_model=p_model,p.adjust.methods=p.adjust.methods,everyorg = pathways,
-                        enrichKEGG=kk)%>%list->s@kegg_analyst
+                        enrichKEGG=kk,Count=Count)%>%list->s@kegg_analyst
       names(s@kegg_analyst)<-"enrichKEGG"
       return(s)
     }
@@ -543,7 +571,7 @@ kegg_pathway1 <- function(data=c("list or data"),org="9606",p_model=c("phyper","
       .get_kegg_analyst(name = data,org = org,kegg_pathways=pathways,
                                          p_model=p_model,everyorg = pathways,
                                          p.adjust.methods=p.adjust.methods,import_model=import_model,
-                                         enrichKEGG=kk)%>%list->s@kegg_analyst
+                                         enrichKEGG=kk,Count=Count)%>%list->s@kegg_analyst
       names(s@kegg_analyst)<-"enrichKEGG"
       return(s)
     }
@@ -551,7 +579,7 @@ kegg_pathway1 <- function(data=c("list or data"),org="9606",p_model=c("phyper","
    # data%>% lapply(function(.x){.get_kegg_analyst(name = .x,org = org,kegg_pathways=kegg_pathways,import_model=import_model,enrichKEGG=kk,everyorg = kegg_pathways,
      #                              p_model=p_model,p.adjust.methods=p.adjust.methods)})->y
      data%>%purrr::map(function(.x){.get_kegg_analyst(name = .x,org = org,kegg_pathways=pathways,import_model=import_model,enrichKEGG=kk,everyorg = pathways,
-                                    p_model=p_model,p.adjust.methods=p.adjust.methods)})->y
+                                    p_model=p_model,p.adjust.methods=p.adjust.methods,Count=Count)})->y
     num<-y%>% lapply( is.null)%>%unlist%>%{!.}%>%which
     num%>% purrr::map( function(.x){y[[.x]]} )->y
     x <- new("compareClusterResult")
