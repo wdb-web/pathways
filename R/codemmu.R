@@ -34,7 +34,7 @@ setClass("metaProfiler",
 
 #import_model=c("betweenness","degree")
 .get_import <- function(enrichKEGG,import_model="degree",kegg_org) {
-  require(data.table)
+library(data.table)
 # n@kegg_analyst$enrichKEGG$a@result->d2
 if(is.null(enrichKEGG)){return(NULL)}
     enrichKEGG@result  ->d2
@@ -42,47 +42,8 @@ if(is.null(enrichKEGG)){return(NULL)}
     d2[,colnames(d2)!="import" ]->d2
    # ad<-""
   #.x<-"KEGG"
-    if(length(names( table(d2$org)[table(d2$org)>1]))==1){
-      d2->d23
-      
-      d23%>%dplyr::group_by(ID)%>%dplyr::summarise(geneID %>% str_split("/")%>%unlist())%>%setNames(c("ID", "Compound_ID" ))%>%
-        ungroup()%>%as.data.table()->da
-      
-      if(sum(table(da$Compound_ID)>1)){
-        d23%>%ungroup()%>%dplyr::select(ID,geneID)->d
-        da[ , if (.N > 1) 
-          data.table::transpose(combn(ID, 2L, simplify = FALSE)), by = Compound_ID
-        ][ , .(Sum = .N), keyby = .(Group.1 = V1, Group.2 = V2)]->l 
-        colnames(d)<-c("Group.1","n")
-        full_join(l,d, by = "Group.1")%>%na.omit()%>%full_join(d,by=c("Group.2"="Group.1"))%>%na.omit()->l2
-        apply(l2[,4:5],1,function(.x){.x%>% str_split("/")%>%unlist%>%unique%>% length })->l2$everysum
-        data.frame(l2$Group.1,l2$Group.2,l2$Sum/l2$everysum)->l
-        colnames(l)<-c("from","to","weight")
-        l%>%dplyr::filter(weight>0.25)->l
-        net_pc<-igraph::graph_from_data_frame(
-          d=l[,1:2],
-          directed=F)
-        igraph::E(net_pc)$weight <- c(l[,3]);
-        if(import_model[1]=="betweenness"){
-          igraph::betweenness(net_pc,weights=l[,3],nobigint = F,directed=F,normalized=T)%>%
-            as.data.frame()->import
-        }
-        if(import_model[1]=='degree'){
-          a<-rbind(l[,c(1,3)],setNames(l[,2:3],names(l[,c(1,3)])))%>%ungroup%>%group_by(from)%>%dplyr::summarise(import=sum(weight/(length(unique(c(l[,1:2]%>%unlist)))-1)))%>%as.data.frame()
-          a[,-1]%>%as.data.frame()->import
-          rownames(import)<- a$from ;
-        }
-        if(import_model[1]=="cloness"){
-          igraph::closeness(net_pc,normalized=F)%>%as.data.frame()->import
-        }    
-        colnames(import)[1]<-"import"
-        import$ID <-import%>%rownames()
-        enrichKEGG@keytype<-"kegg"
-        d23%>%full_join(import,by = "ID")->d23;
-        d23[d23$ID!="1",]->d23
-        ad<-d23%>%.[,c(which(colnames(d23)!="org"),which(colnames(d23)=="org"))]
-    }else{ ad<- names( table(d2$org)[table(d2$org)>1])%>%unique%>%
-     purrr::map(function(.x){
+    ad<- names( table(d2$org)[table(d2$org)>1])%>%unique%>%
+    purrr::map(function(.x){
     d2[which(d2$org==.x),]->d23
 
     d23%>%dplyr::group_by(ID)%>%dplyr::summarise(geneID %>% str_split("/")%>%unlist())%>%setNames(c("ID", "Compound_ID" ))%>%
@@ -93,7 +54,7 @@ if(is.null(enrichKEGG)){return(NULL)}
 
     d23%>%ungroup()%>%dplyr::select(ID,geneID)->d
     da[ , if (.N > 1) 
-      transpose(combn(ID, 2L, simplify = FALSE)), by = Compound_ID
+      data.table::transpose(combn(ID, 2L, simplify = FALSE)), by = Compound_ID
     ][ , .(Sum = .N), keyby = .(Group.1 = V1, Group.2 = V2)]->l 
     colnames(d)<-c("Group.1","n")
     
@@ -125,12 +86,12 @@ data.frame(l2$Group.1,l2$Group.2,l2$Sum/l2$everysum)->l
     d23[d23$ID!="1",]->d23
        return(d23%>%.[,c(which(colnames(d23)!="org"),which(colnames(d23)=="org"))])
     }
-  })%>%purrr::reduce(rbind)}
+  })%>%purrr::reduce(rbind)
     ad%>%data.frame ->enrichKEGG@result
    # enrichKEGG@result$import[is.na(enrichKEGG@result$import)]<-0
     rownames(enrichKEGG@result)<-enrichKEGG@result$ID
     return(enrichKEGG)
-}}
+}
   get_all_p <- function(g){
     g%>%dplyr::group_by(Cluster)%>%dplyr::summarise(w=BgRatio%>%str_split("/")%>%unlist()%>%.[2])%>%ungroup()->n
     g%>%dplyr::select(Cluster,ID ,pvalue)%>%dplyr::group_split(Cluster)%>%purrr::map(~.x%>%.[,-1])%>%purrr::reduce(full_join,by="ID")->k
@@ -313,85 +274,10 @@ data.frame(l2$Group.1,l2$Group.2,l2$Sum/l2$everysum)->l
    dplyr::summarise( ID = ID,name=name,group=A,org="KEGG",Gene_id=Gene_id) 
 
 
-    k<-fread("http://rest.kegg.jp/link/pathway/cpd",header = F)%>% setNames(c("Compound_ID","V1"))
-    b=fread("http://rest.kegg.jp/list/pathway",head=F)%>%inner_join(k,by = "V1")%>% inner_join(pathways,by="V2")
-    y<-readxl::read_xlsx(system.file("data", "PubChem_and_kegg.xlsx", package = "pathways"))
-    cdp<-b%>% dplyr::mutate( ID=name%>%str_remove("path:"),name=V2,
-      KEGGID=Compound_ID%>%str_remove( "cpd:"))%>%inner_join(y,by="KEGGID") %>%inner_join(s,by=c("name"="C"))%>%
-      dplyr::summarise( ID = ID,name=name,group=A,org="KEGG",Compound_ID=cid)%>% tibble %>%
-      group_by(ID,name,group,org) %>% dplyr::summarise(Compound_ID=paste(Compound_ID,sep="|",collapse = "|"))%>%
-      ungroup 
-
-    k<-fread("http://rest.kegg.jp/link/pathway/enzyme",header = F)%>% setNames(c("Ecs_id","V1"))%>%.[str_detect(.$V1,"^path:map"), ]
-    Ecs=fread("http://rest.kegg.jp/list/pathway",head=F)%>%inner_join(k,by = "V1")%>% inner_join(pathways,by="V2")%>% 
-    dplyr::mutate( ID=name%>%str_remove("path:"),name=V2,
-      KEGGID=Ecs_id%>%str_remove( "ec:"))%>%inner_join(s,by=c("name"="C"))%>%
-      dplyr::summarise( ID = ID,name=name,group=A,org="KEGG",Ecs_id=KEGGID)%>% tibble %>%
-      group_by(ID,name,group,org) %>% dplyr::summarise( Ecs_id=paste(Ecs_id,sep="|",collapse = "|"))%>%
-      ungroup 
-
-    fuu<-full_join(cdp,gene,by = c("ID", "name", "group", "org"))%>%
-    full_join(par,by = c("ID", "name", "group", "org"))%>%
-    full_join(Ecs,by = c("ID", "name", "group", "org"))%>%
-    dplyr::mutate(name, group,org,Compound_ID,Gene_id,  Protacxns_id,Ecs_id)
-    fuu[is.na(fuu)]<-"NULL"
-    fuu$Compound_ID=unlist(fuu$Compound_ID)
-    fuu$Gene_id=unlist(fuu$Gene_id)
-    
-    fuu$Protacxns_id=unlist(fuu$Protacxns_id)
-    fuu$Ecs_id=unlist(fuu$Ecs_id)
-    
-    fuu %>%return
-     
-  #  ,model="ec"
-  #  fread(paste("http://rest.kegg.jp/list/pathway/",org,sep = ""),header = F)->k
-  # name_rmends <- function(.x) {
-  #  .x %>%str_locate_all(" - ")%>%.[[1]]->jk
-  # jk[nrow(jk),]%>%.[1]%>%{.-1}%>%str_sub(.x, end =.)%>%return
-  #}# getname
-  #k$V2%>%purrr::map(~name_rmends(.x))%>%unlist()%>%cbind(k[,1])->pathways# getname
-
-  #fread("http://rest.kegg.jp/list/pathway/map",header = F)->enknowpathways
-  # colnames(pathways)[1]<-"path"
-  # colnames(enknowpathways)[2]<-"path"
-  # dplyr::left_join(pathways,enknowpathways,by=colnames(enknowpathways)[2])->k2
-   # colnames(k2)[2:3]<-c("ko","pathway")
-  #  k2$pathway%>%str_remove("path:")%>%.[1]
-   # fread(paste("http://rest.kegg.jp/link/",model, "/map00010",sep = ""),header = F,verbose=F,showProgress=F)
-   # pb <- dplyr::progress_estimated(length(k2$pathway))
-   # get_kegg_comp <- function(.x) {
-    #  pb$tick()$print()
-
-     # tryCatch({
-   #     return(fread(paste("http://rest.kegg.jp/link/",model,"/",
-   #                        .x,sep = ""),header = F,verbose=F,showProgress=F))
-   #   },
-    #  error = function(e){return(NULL)
-    #  },finally = {
-    #  })
-   # }
-
-  #   k2$pathway%>%str_remove("path:")%>%purrr::map(~get_kegg_comp(.x))%>%
-  #   purrr::reduce(bind_rows)%>%setNames(c("pathway","Compound_ID"))->kegg
-
-  #   inner_join(k2,kegg)->b
-    
-  #   inner_join(b,s[,c(2,4)],by=c("path"="C"))->b
-  #  if(model=="cpd"){
-  #    y<-readxl::read_xlsx(system.file("data", "PubChem_and_kegg.xlsx", package = "pathways"))
-  #   b %>% dplyr::mutate( ID=ko%>%str_remove("path:"),name=path,
-  #     KEGGID=Compound_ID%>%str_remove( paste(model,":",sep="")))%>%inner_join(y,by="KEGGID")%>%
-  #     dplyr::summarise( ID = ID,name=path,group=A,org="KEGG",Compound_ID=cid)%>%as.data.frame%>%
-  #     group_by(ID) %>% dplyr::summarise( ID = ID,name,group,org,Compound_ID=paste(Compound_ID,sep="|",collapse = "|"))%>%
-  #     ungroup%>%return
-  # }
-  #   if(model=="ec"){
-  #   b %>% dplyr::mutate( ID=ko%>%str_remove("path:"),name=path,
-  #     KEGGID=Compound_ID%>%str_remove( paste(model,":",sep="")))%>%
-  #     dplyr::summarise( ID = ID,name=path,group=A,org="KEGG",Compound_ID=KEGGID)%>%as.data.frame%>%
-  #     group_by(ID) %>% dplyr::summarise( ID = ID,name,group,org,Ecs_id=paste(Compound_ID,sep="|",collapse = "|"))%>%
-  #     ungroup%>%return
-  # }
+    b %>% dplyr::mutate(Compound_ID=Compound_ID%>%str_remove("cpd:"),
+                        ko=ko%>%str_remove("path:"),
+                        pathway=pathway%>%str_remove("path:")
+    )%>%return
   }
 
   get_anong<-function(org=org) {
@@ -461,8 +347,7 @@ data.frame(l2$Group.1,l2$Group.2,l2$Sum/l2$everysum)->l
   #name<-data=c("P0DTD3","Q9BYF1","Q9NRS4","Q9NYK1")
   .get_kegg_analyst<-function(name="list Compound_ID or gean or ec or par", org=org,
   p_model=p_model,kegg_pathways=kegg_pathways,
-  p.adjust.methods=p.adjust.methods,
-                              qvalue.methods="fdr",enrichKEGG=kk,import_model=import_model,everyorg=everyorg){
+  p.adjust.methods=p.adjust.methods, qvalue.methods="fdr",enrichKEGG=kk,import_model=import_model,everyorg=everyorg){
     if(name[1]%>%str_detect("cid:\\d")){
       cat("doing  Compound analyst \n")
       name%>%unique()->f
@@ -488,7 +373,7 @@ data.frame(l2$Group.1,l2$Group.2,l2$Sum/l2$everysum)->l
                            kegg_org  = everyorg)
                           , error = function(e){
                           print(e)
-                          return(enrichKEGG)
+                          enrichKEGG
                           })
    
       enrichKEGG@result$import[is.na(enrichKEGG@result$import)]<-0
@@ -608,6 +493,8 @@ name%>%unique()->f
 kegg_pathway1 <- function(data=c("list or data"),org="9606",p_model=c("phyper","fisher"),
                             p.adjust.methods="holm",import_model=c("degree","betweenness"),org_db=NULL) {
  options(dplyr.summarise.inform = FALSE)
+ library(dplyr)
+ library(data.table)
    if(is.null(org_db)){
    pathways<-get_org(org)
    pathways$org<- factor(pathways$org, level=c("KEGG",pathways$org%>%unique%>%.[.!="KEGG"]) )
@@ -690,6 +577,7 @@ x@keytype<-"id"
 #' kegg_level(n)
   
   kegg_level=function(n,level=2){
+    library(data.table)
     org1=n@org[n@org$org=="KEGG",]
     
     x<-readLines("https://www.genome.jp/kegg-bin/download_htext?htext=br08901.keg&format=htext&filedir=")
@@ -719,7 +607,10 @@ x@keytype<-"id"
     )
     l=data.frame(ID=f$name,f)
     
-    kegg=kegg_pathway1(data = lapply(n@kegg_analyst[["enrichKEGG"]], function(x){x@gene}),org_db = l)
+    kegg=kegg_pathway1(data = lapply(n@kegg_analyst[["enrichKEGG"]],function(x) {x@gene} ) ,org_db = l)
+     #kegg=kegg_pathway1(data =n@kegg_analyst[["enrichKEGG"]]$a@gene,org_db = l)
     kegg@org=n@org
     return(kegg)
   }
+
+ #kegg=kegg_pathway1(data =n@kegg_analyst[["enrichKEGG"]]$a@gene,org_db = l)
