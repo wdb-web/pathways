@@ -274,10 +274,30 @@ data.frame(l2$Group.1,l2$Group.2,l2$Sum/l2$everysum)->l
    dplyr::summarise( ID = ID,name=name,group=A,org="KEGG",Gene_id=Gene_id) 
 
 
-    b %>% dplyr::mutate(Compound_ID=Compound_ID%>%str_remove("cpd:"),
-                        ko=ko%>%str_remove("path:"),
-                        pathway=pathway%>%str_remove("path:")
-    )%>%return
+k<-fread("http://rest.kegg.jp/link/pathway/cpd",header = F)%>% setNames(c("Compound_ID","V1"))
+  b=fread("http://rest.kegg.jp/list/pathway",head=F)%>%inner_join(k,by = "V1")%>% inner_join(pathways,by="V2")
+  y<-readxl::read_xlsx(system.file("data", "PubChem_and_kegg.xlsx", package = "pathways"))
+  cdp<-b%>% dplyr::mutate( ID=name%>%str_remove("path:"),name=V2,
+                           KEGGID=Compound_ID%>%str_remove( "cpd:"))%>%inner_join(y,by="KEGGID") %>%inner_join(s,by=c("name"="C"))%>%
+    dplyr::summarise( ID = ID,name=name,group=A,org="KEGG",Compound_ID=cid)%>% tibble %>%
+    group_by(ID,name,group,org) %>% dplyr::summarise(Compound_ID=paste(Compound_ID,sep="|",collapse = "|"))%>%
+    ungroup
+
+  k<-fread("http://rest.kegg.jp/link/pathway/enzyme",header = F)%>% setNames(c("Ecs_id","V1"))%>%.[str_detect(.$V1,"^path:map"), ]
+  Ecs=fread("http://rest.kegg.jp/list/pathway",head=F)%>%inner_join(k,by = "V1")%>% inner_join(pathways,by="V2")%>%
+    dplyr::mutate( ID=name%>%str_remove("path:"),name=V2,
+                   KEGGID=Ecs_id%>%str_remove( "ec:"))%>%inner_join(s,by=c("name"="C"))%>%
+    dplyr::summarise( ID = ID,name=name,group=A,org="KEGG",Ecs_id=KEGGID)%>% tibble %>%
+    group_by(ID,name,group,org) %>% dplyr::summarise( Ecs_id=paste(Ecs_id,sep="|",collapse = "|"))%>%
+    ungroup
+
+  fuu<-full_join(cdp,gene,by = c("ID", "name", "group", "org"))%>%
+    full_join(par,by = c("ID", "name", "group", "org"))%>%
+    full_join(Ecs,by = c("ID", "name", "group", "org"))%>%
+    dplyr::mutate(name, group,org,Compound_ID,Gene_id,  Protacxns_id,Ecs_id)
+  fuu[is.na(fuu)]<-"NULL"
+
+  return(fuu)
   }
 
   get_anong<-function(org=org) {
