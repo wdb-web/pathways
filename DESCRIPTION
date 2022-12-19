@@ -9,8 +9,8 @@ Description: More about what it does (maybe more than one line)
 License: AGPL (>= 3)
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 3.5.0), purrr, tidyr, DOSE, stringr, data.table,
-        mixOmics, enrichplot, randomcoloR, circlize, ComplexHeatmap,
+Depends: R (>= 3.5.0), purrr, tidyr, stringr, data.table,
+        enrichplot, randomcoloR, circlize, ComplexHeatmap,
         ggplot2
 RoxygenNote: 7.2.0
 Suggests: rmarkdown, knitr, testthat
