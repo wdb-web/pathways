@@ -545,10 +545,10 @@ kegg_pathway1 <- function(data=c("list or data"),org="9606",p_model=c("phyper","
  library(data.table)
    if(is.null(org_db)){
    pathways<-get_org(org)
-   pathways$org<- factor(pathways$org, level=c("KEGG",pathways$org%>%unique%>%.[.!="KEGG"]) )
-  pathways<- pathways[order(pathways$org),]%>% .[!duplicated(pathways$name) ,]}
-  if(!is.null(org_db)){  pathways=org_db
-  }
+ #  pathways$org<- factor(pathways$org, level=c("KEGG",pathways$org%>%unique%>%.[.!="KEGG"]) )
+  #pathways<- pathways[order(pathways$org),]%>% .[!duplicated(pathways$name) ,]
+   }
+  if(!is.null(org_db)){  pathways=org_db}
   pathways$Compound_ID=unlist(pathways$Compound_ID)
   pathways$Gene_id=unlist(pathways$Gene_id)
   
