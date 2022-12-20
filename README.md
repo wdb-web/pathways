@@ -13,7 +13,7 @@ The goal of pathways is to …
 You can install the development version of pathways like so:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+devtools::install_github("wdb-web/pathways")
 ```
 
 ## Example
