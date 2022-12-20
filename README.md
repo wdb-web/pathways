@@ -45,8 +45,9 @@ library(pathways)
 ## basic example code
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+```r
+kegg_pathway1(data=c("P0DTD3","Q9BYF1","Q9NRS4","Q9NYK1"))->da
+```
 
 ``` r
 library(pathways)
