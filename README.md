@@ -13,7 +13,7 @@ The goal of pathways is to …
 You can install the development version of pathways like so:
 
 ``` r
-devtools::install_github("wdb-web/pathways")
+# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
 ```
 
 ## Example
@@ -45,9 +45,8 @@ library(pathways)
 ## basic example code
 ```
 
-```r
-kegg_pathway1(data=c("P0DTD3","Q9BYF1","Q9NRS4","Q9NYK1"))->da
-```
+What is special about using `README.Rmd` instead of just `README.md`?
+You can include R chunks like so:
 
 ``` r
 library(pathways)

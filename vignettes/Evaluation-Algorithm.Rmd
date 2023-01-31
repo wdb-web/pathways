@@ -1,3 +1,4 @@
+```{=html}
 <!--
  * @Author: wxm-web 2402715813@qq.com
  * @Date: 2022-02-10 14:45:03
@@ -5,6 +6,7 @@
  * @LastEditTime: 2022-05-22 19:52:49
  * @FilePath: \pathways\vignettes\Evaluation-Algorithm.Rmd
 -->
+```
 ---
 title: "Evaluation-Algorithm"
 output: rmarkdown::html_vignette
@@ -29,6 +31,7 @@ knitr::opts_chunk$set(
 # pathways
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 The goal of pathways is to ...
@@ -45,7 +48,6 @@ You can install the development version of pathways like so:
 
 This is a basic example which shows you how to solve a common problem:
 
-
 ```{r cars}
 library(pathways)
 library(dplyr)
@@ -57,7 +59,7 @@ library(ggraph)
 load(system.file("data", "Tes.Rdata",package = "pathways"))
  n@kegg_analyst$compareClusterResult@compareClusterResult%>%dplyr::filter(org=="KEGG")%>%
  dplyr::filter(
-(Description%in%c((n@kegg_analyst$compareClusterResult%>%group_by(Description)%>%
+(Description%in%c((n@kegg_analyst$compareClusterResult@compareClusterResult%>%group_by(Description)%>%
                     summarise(n=n()>1))%>%
                     dplyr::filter(n==T)%>%.$Description)|qvalue     <0.05)
 )%>%as.data.frame()->f

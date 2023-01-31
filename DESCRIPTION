@@ -9,13 +9,13 @@ Description: More about what it does (maybe more than one line)
 License: AGPL (>= 3)
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 3.5.0), purrr, tidyr, stringr, data.table,
-        enrichplot, randomcoloR, circlize, ComplexHeatmap,
+Depends: R (>= 3.5.0), purrr, tidyr, DOSE, stringr, data.table,
+        mixOmics, enrichplot, randomcoloR, circlize, ComplexHeatmap,
         ggplot2
 RoxygenNote: 7.2.0
-Suggests: rmarkdown, knitr, testthat, DOSE, mixOmics 
+Suggests: rmarkdown, knitr, testthat
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 NeedsCompilation: no
-Packaged: 2022-10-25 08:49:52 UTC; admin
+Packaged: 2023-01-31 09:25:18 UTC; admin
