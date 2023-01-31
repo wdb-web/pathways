@@ -1,44 +1,14 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
-# pathways
-
-<!-- badges: start -->
-<!-- badges: end -->
-
-The goal of pathways is to …
 
 ## Installation
 
 You can install the development version of pathways like so:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+devtools::install_github("wdb-web/pathways")
 ```
 
-## Example
 
-This is a basic example which shows you how to solve a common problem:
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
-# pathways
-
-<!-- badges: start -->
-<!-- badges: end -->
-
-The goal of pathways is to …
-
-## Installation
-
-You can install the development version of pathways like so:
-
-``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
-```
-
-## Example
-
-This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(pathways)
