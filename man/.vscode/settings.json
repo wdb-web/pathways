@@ -1,9 +1,0 @@
-{
-    "r.lsp.debug": true,
-    "r.lsp.use_stdio": true,
-    "r.libPaths": [
-        "D:\\wdb\\R-4.1.2\\library"
-    ],
-    "r.helpPanel.cacheIndexFiles": "Workspace",
-    "r.rmarkdown.knit.openOutputFile": true
-}
